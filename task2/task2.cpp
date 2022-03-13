@@ -1,40 +1,54 @@
 #include <iostream>
 #include <vector>
 
-std::string NextPermutationAlgorithm(std::string w)  
+void swap(char &in1, char &in2)
 {
-    int l = w.length();
-    std::vector<char> bytes(w.begin(), w.end());
+    auto tmp = in1; 
+    in1 = in2; 
+    in2 = tmp;
+}
+
+std::string NextPermutationAlgorithm(std::string in)  
+{
+    int strLen = in.length();
+    std::vector<char> bytes(in.begin(), in.end());
     bytes.push_back('\0');
-    char *b = &bytes[0];
-	std::string r = "\0";
+    char *handler = &bytes[0];
 
-	for (int i = l - 1; i > 0; i--)
+    int index = -1;
+	for (int i = strLen - 1; i > 0; i--)
     {
-		if (b[i-1] < b[i]) 
+		if (handler[i-1] >= handler[i]) 
         {
-			int pivot = i;
-			for (int j = pivot; j < l; j++)
-            {
-				if (w[j] <= b[pivot] && b[i-1] < b[j]) 
-                {
-					pivot = j;
-				}
-			}
+            continue;
+        }
+        index = i;
+        break;
+    }
 
-            auto tmp = b[i-1]; b[i-1] = b[pivot]; b[pivot] = tmp;
+    if (index < 0)
+    {
+        return std::string("\0");
+    }
 
-			for (int j = l-1; i < j; i++, j--) 
-            {
-                auto tmp = b[i]; b[i] = b[j]; b[j] = tmp;
-			}
 
-			r = b;
-			break;
+	int pivot = index;
+	for (int j = pivot; j < strLen; j++)
+    {
+		if (in[j] <= handler[pivot] && handler[index-1] < handler[j]) 
+        {
+			pivot = j;
 		}
 	}
 
-	return r;
+    swap(handler[index-1], handler[pivot]);
+
+	for (int j = strLen-1; index < j; index++, j--) 
+    {
+        swap(handler[index], handler[j]);
+	}
+
+	return std::string(handler);
 }
 
 int main()
